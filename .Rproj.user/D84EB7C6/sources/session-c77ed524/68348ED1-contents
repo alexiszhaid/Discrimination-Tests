@@ -1,0 +1,24 @@
+#Prueba  binomial
+
+datos <- data.frame(
+  respuesta = c(Triangular$Identificación_Correcta)
+)
+binom.test(sum(datos$respuesta), nrow(datos), p = 1/3)
+barplot(table(datos$respuesta), main = "Resultados de la Prueba Triangular", 
+        ylab = "Frecuencia", xlab = "Respuestas", 
+        names.arg = c("Incorrecta", "Correcta"))
+
+#Prueba Chi- cuadrada
+observados <- table(datos$respuesta)
+esperados <- c(sum(observados) / 3, sum(observados) * 2 / 3)
+
+chisq.test(x = observados, p = esperados / sum(esperados))
+
+
+#La distribución normal y la prueba Z sobre proporciones
+
+prop_observada <- mean(datos$respuesta)
+prop_esperada <- 1/3
+n <- length(datos$respuesta)
+z <- (prop_observada - prop_esperada) / sqrt(prop_esperada * (1 - prop_esperada) / n)
+p_valor <- 2 * pnorm(-abs(z)) # Test de dos colas

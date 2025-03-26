@@ -1,0 +1,161 @@
+---
+title: "Discrimination Tests in Sensory Evaluation"
+author: "Alexis Zhaid Carrillo García"
+date: "2025-03-26"
+output: html_document
+bibliography: references.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# What are Discrimination Tests?
+
+Discrimination sensory tests are designed to determine whether a perceivable difference exists between two products. Unlike descriptive or affective tests, the goal is not to describe or rate the intensity of attributes, but simply to assess whether a difference can be detected by trained or untrained panelists. Common types of Discrimination tests include Triangle Test, Duo-Trio Test, 2-Alternative Forced Choice (2-AFC), 3-AFC, Tetrad, and more [@iso4120].
+
+Statistical analysis of the results is based on probability theory, using tools like the binomial distribution, chi-squared tests, or z-tests for proportions. For standard test formats, specialized functions in the sensR package streamline the analysis process.
+
+# The triangle test
+
+The triangle test is a discrimination sensory method in which each panelist receives three samples. Two are the same and one is different. The panelist must identify the odd sample.
+
+## Simulated Data
+
+We simulate responses from 30 panelists for illustration (1 = correct, 0 = incorrect).
+
+```{r simulate-data}
+set.seed(123)
+Triangle <- data.frame(Correct_answer = rbinom(30, 1, prob = 0.5))
+```
+
+## Binomial Test
+Used to compare the observed number of correct answers to the chance level (1/3 for triangle test).
+
+```{r}
+data <- data.frame(answer = Triangle$Correct_answer)
+binom.test(sum(data$answer), nrow(data), p = 1/3)
+```
+
+## Chi-Squared Test
+
+Compares observed frequencies to the expected distribution.
+
+```{r}
+observed <- table(factor(data$answer, levels = c(0,1)))
+names(observed) <- c("Incorrect", "Correct")
+
+expected <- c("Incorrect" = length(data$answer) * 2 / 3,
+               "Correct"   = length(data$answer) * 1 / 3)
+
+chisq.test(x = observed, p = expected / sum(expected))
+
+```
+
+## Z-Test for Proportions
+Tests whether the observed proportion differs from the expected chance level.
+
+```{r}
+observed_prob <- mean(data$answer)
+expected_prob <- 1/3
+n <- length(data$answer)
+
+z <- (observed_prob - expected_prob) / sqrt(expected_prob * (1 - expected_prob) / n)
+p_value <- 2 * pnorm(-abs(z))  # Two-tailed test
+
+z
+p_value
+```
+
+While the binomial test, z-test for proportions, and chi-squared test all aim to determine whether the observed number of correct responses significantly differs from what is expected by chance, their sensitivity can vary. In most cases, the binomial test is preferred for sensory discrimination tests due to its exact nature, especially with small to moderate sample sizes. The z-test provides a good approximation when the sample size is large enough, while the chi-squared test may be less reliable with only two response categories or low expected frequencies. Additionally, the Yates continuity correction can be applied to the chi-squared test to reduce bias in small samples, although it may lead to more conservative results [@hernandez2016].
+
+## Yates' Continuity Correction
+
+The Yates continuity correction is commonly applied in the chi-squared test with 2 categories (2x1 or 2x2 tables) to adjust for the overestimation of significance due to approximation errors [@agresti2018].
+
+```{r}
+chisq.test(x = observed, p = expected / sum(expected), correct = TRUE)
+```
+
+✅ Use when you have small sample sizes and only two response categories
+
+⚠️ Can make the test more conservative, possibly increasing the p-value
+
+❌ Not needed when using the exact binomial test
+
+# Applying the Same Code to Other Tests
+
+The same statistical logic used for the triangle test can be applied to other discrimination tests such as:
+
+- Duo-Trio (chance = 1/2)
+
+- Tetrad (chance = 1/3)
+
+- Hexad (chance = 1/5)
+
+- Two-out-of-Five (2-of-5) (chance = 0.206)
+
+To analyze these tests, simply change the value of the chance probability (p) in the binomial test, z-test, and chi-squared test accordingly.
+
+Example: Two-out-of-Five Test
+Let’s say we tested 25 panelists, and 9 of them correctly identified the two matching samples.
+
+```{r}
+# Observed responses
+observed_2of5 <- c(Incorrect = 25 - 9, Correct = 9)
+
+# Expected frequencies under null hypothesis (p ≈ 0.206)
+expected_2of5 <- c(Incorrect = 25 * (1 - 0.206),
+                   Correct = 25 * 0.206)
+
+# Chi-squared test
+chisq.test(x = observed_2of5, p = expected_2of5 / sum(expected_2of5))
+```
+
+This approach allows you to evaluate various test types by modifying only the expected probabilities, making it easy to adapt the analysis for any forced-choice sensory discrimination method.
+
+# Using discrim() from the sensR Package
+
+The discrim() function from the sensR package provides a unified and flexible interface for analyzing a wide variety of discrimination protocols. It allows you to test hypotheses about sensory differences using different methods, test types, and statistical frameworks—all with one function.
+
+## Example: Triangle Test
+
+```{r, warning=FALSE}
+library(sensR)
+
+discrim_result <- discrim(19, 30, method = "triangle")
+print(discrim_result)
+```
+
+This function internally accounts for the structure of each test (such as chance level, forced-choice nature, and d-prime calculations), making it ideal for standardized analysis and reporting across different test types.
+
+# Testing for Similarity
+
+Most sensory discrimination tests are designed to detect differences between products. In such tests, the focus is on minimizing the Type I error (α-risk)—the probability of concluding that a perceptible difference exists when in fact there is none. This approach assumes that Type II error (β-risk) and the proportion of distinguishers (pd) are either negligible or unimportant. Consequently, sample sizes can be kept relatively small.
+
+However, in many industrial and quality control applications, the goal is not to prove that products are different, but rather that they are similar enough to be used interchangeably—for example, when switching suppliers or reformulating for cost savings.
+
+In similarity testing, the focus shifts. The analyst must define what constitutes a meaningful difference by specifying a value for pd, and then chooses a small value for β-risk (Type II error) to ensure the test has high power to detect differences if they exist. In this case, a larger α-risk is tolerated to avoid requiring an excessively large number of assessors [@meilgaard2016].
+
+## Example: Similarity Test Using discrim()
+
+```{r}
+library(sensR)
+
+# Let's assume we want to demonstrate similarity (not difference)
+# pd = 0.30 is the threshold for a meaningful difference (i.e., no more than 30% distinguishers)
+# test = "similarity" enables the appropriate hypothesis test
+
+discrim_sim <- discrim(correct = 17,
+                       total = 30,
+                       pd0 = 0.30,
+                       method = "triangle",
+                       test = "similarity",
+                       statistic = "exact")
+
+print(discrim_sim)
+```
+
+This test evaluates whether the observed proportion of correct responses is low enough to conclude that no meaningful perceptible difference exists between the two samples, given the defined threshold pd0.
+
+# References
