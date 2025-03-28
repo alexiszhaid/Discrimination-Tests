@@ -3,7 +3,7 @@
     "path": "~/Computo estadístico/Sensory Evaluation with R/Discrimination test/Discrimination_test.Rmd",
     "project_path": "Discrimination_test.Rmd",
     "type": "r_markdown",
-    "hash": "3488269787",
+    "hash": "3095345684",
     "contents": "",
     "dirty": false,
     "created": 1743017811206.0,
@@ -13,16 +13,16 @@
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "1,24",
+        "cursorPosition": "4,21",
         "scrollLine": "0",
-        "last_setup_crc32": "c77ed524bb338d19"
+        "last_setup_crc32": ""
     },
     "folds": "",
-    "lastKnownWriteTime": 1743025011,
+    "lastKnownWriteTime": 1743195228,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1743025011031,
+    "last_content_update": 1743195228185,
     "read_only": false,
     "read_only_alternatives": []
 }

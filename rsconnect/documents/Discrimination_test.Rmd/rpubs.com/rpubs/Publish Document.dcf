@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/1289617/fe89d4f4bbbf43f898f4fe1692dfc805
+bundleId: https://api.rpubs.com/api/v1/document/1289617/fe89d4f4bbbf43f898f4fe1692dfc805
+url: http://rpubs.com/alexiszhaid/1289617
+version: 1

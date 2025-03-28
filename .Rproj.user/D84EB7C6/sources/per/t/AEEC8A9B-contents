@@ -4,6 +4,7 @@ author: "Alexis Zhaid Carrillo García"
 date: "2025-03-26"
 output: html_document
 bibliography: references.bib
+cls: APA.cls
 ---
 
 ```{r setup, include=FALSE}
