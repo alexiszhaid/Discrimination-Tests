@@ -30,12 +30,11 @@ Consumer tests (hedonic scaling, CATA)
 
 Data visualization and statistical interpretation
 
-📩 Contact
-If you have questions, suggestions, or want to collaborate on the book project, feel free to reach out:
+📩 Contact If you have questions, suggestions, or want to collaborate on the book project, feel free to reach out:
 
 - 📧 Email: alexiszcg@gmail.com  
-- 🧠 GitHub: [@tuusuario](https://github.com/alexiszhaid)  
-- 📘 LinkedIn: [Your Name]([https://www.linkedin.com/in/your-profile/](https://www.linkedin.com/in/alexis-zhaid-carrillo-garc%C3%ADa-2b01ba205/))  
+- 🧠 GitHub: [@alexiszhaid](https://github.com/alexiszhaid)  
+- 📘 LinkedIn: [Alexis Zhaid](https://www.linkedin.com/in/alexis-zhaid-carrillo-garc%C3%ADa-2b01ba205/)  
 - 📍 Location: Mexico
 
 ---
